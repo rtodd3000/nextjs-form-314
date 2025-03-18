@@ -1,20 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import { Form, Alert, Button, Col, Container, Card, ButtonGroup, Row } from 'react-bootstrap';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import Multiselect from 'multiselect-react-dropdown';
 import { upsertStudent } from '@/lib/dbActions';
-import swal from 'sweetalert';
 import {
   CreateStudentSchema,
+  ICreateStudentForm,
+  gpaValues,
   hobbyKeys,
+  instructorKeys,
   levelKeys,
   majorKeys,
-  gpaValues,
-  ICreateStudentForm,
 } from '@/lib/validationSchemas';
+import { yupResolver } from '@hookform/resolvers/yup';
+import Multiselect from 'multiselect-react-dropdown';
+import { useState } from 'react';
+import { Alert, Button, ButtonGroup, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Controller, useForm } from 'react-hook-form';
+import swal from 'sweetalert';
 
 const CreateStudentForm = () => {
   const formPadding = 'py-1';
@@ -38,7 +39,9 @@ const CreateStudentForm = () => {
     name: string;
     hobbies?: (string | undefined)[] | undefined;
     enrolled?: Date | undefined;
+    instructor?: string;
   }) => {
+    // Removed unused instructor variable
     const result = await upsertStudent(data as ICreateStudentForm);
     if (result) {
       swal('Success!', 'Student data saved successfully!', 'success');
@@ -85,6 +88,26 @@ const CreateStudentForm = () => {
                   <div className="invalid-feedback">{errors.email?.message}</div>
                 </Form.Group>
               </Col>
+              <Col>
+                <Form.Group controlId="formInstructor">
+                  <Form.Label>
+                    Instructor
+                    <Form.Text style={{ color: 'red' }}>*</Form.Text>
+                  </Form.Label>
+                  <Form.Select
+                    {...register('instructor')}
+                    className={`form-control ${errors.instructor ? 'is-invalid' : ''}`}
+                  >
+                    {instructorKeys.map((instructor) => (
+                      <option key={instructor} value={instructor}>
+                        {instructor}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <div className="invalid-feedback">{errors.instructor?.message}</div>
+                  <Form.Text muted>Who is your instructor?</Form.Text>
+                </Form.Group>
+              </Col>
             </Row>
             <Row className={formPadding}>
               <Form.Group controlId="formBio">
@@ -100,7 +123,10 @@ const CreateStudentForm = () => {
                     Level
                     <Form.Text style={{ color: 'red' }}>*</Form.Text>
                   </Form.Label>
-                  <Form.Select {...register('level')} className={`form-control ${errors.level ? 'is-invalid' : ''}`}>
+                  <Form.Select
+                    {...register('level')}
+                    className={`form-control ${errors.level ? 'is-invalid' : ''}`}
+                  >
                     {levelKeys.map((level) => (
                       <option key={level} value={level}>
                         {level}

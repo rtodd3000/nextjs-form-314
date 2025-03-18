@@ -1,18 +1,19 @@
 'use client';
 
+import { upsertStudent } from '@/lib/dbActions';
 import {
-  ICreateStudentForm,
   EditStudentSchema,
+  ICreateStudentForm,
+  gpaValues,
   hobbyKeys,
+  instructorKeys,
   levelKeys,
   majorKeys,
-  gpaValues,
 } from '@/lib/validationSchemas';
-import { Button, ButtonGroup, Card, Col, Container, Form, Row } from 'react-bootstrap';
-import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Multiselect from 'multiselect-react-dropdown';
-import { upsertStudent } from '@/lib/dbActions';
+import { Button, ButtonGroup, Card, Col, Container, Form, Row } from 'react-bootstrap';
+import { Controller, useForm } from 'react-hook-form';
 import swal from 'sweetalert';
 
 const EditStudentForm = ({ student }: { student: ICreateStudentForm }) => {
@@ -46,6 +47,7 @@ const EditStudentForm = ({ student }: { student: ICreateStudentForm }) => {
     name: string;
     hobbies?: (string | undefined)[] | undefined;
     enrolled?: Date | undefined;
+    instructor?: string;
   }) => {
     const result = await upsertStudent(data as ICreateStudentForm);
     if (result) {
@@ -85,6 +87,26 @@ const EditStudentForm = ({ student }: { student: ICreateStudentForm }) => {
                     <Form.Text style={{ color: 'red' }}>*</Form.Text>
                   </Form.Label>
                   <Form.Control type="email" value={student.email} disabled />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="formInstructor">
+                  <Form.Label>
+                    Instructor
+                    <Form.Text style={{ color: 'red' }}>*</Form.Text>
+                  </Form.Label>
+                  <Form.Select
+                    {...register('instructor')}
+                    className={`form-control ${errors.instructor ? 'is-invalid' : ''}`}
+                  >
+                    {instructorKeys.map((instructor) => (
+                      <option key={instructor} value={instructor}>
+                        {instructor}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <div className="invalid-feedback">{errors.instructor?.message}</div>
+                  <Form.Text muted>Who is your instructor?</Form.Text>
                 </Form.Group>
               </Col>
             </Row>

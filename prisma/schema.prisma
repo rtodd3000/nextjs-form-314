@@ -19,6 +19,13 @@ model EnrollmentData {
   enrolled DateTime
 }
 
+enum Instructor{
+  Connor
+  Moore
+  Morita
+  Port
+}
+
 enum Hobby {
   Surfing
   Running
@@ -40,6 +47,7 @@ enum Major {
   ComputerScience
 }
 
+
 model StudentData {
   id      Int     @id @default(autoincrement())
   name    String
@@ -49,4 +57,5 @@ model StudentData {
   level   Level
   gpa     Int
   major   Major
+  instructor Instructor
 }

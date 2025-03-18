@@ -1,8 +1,8 @@
 'use server';
 
-import { Hobby, Level, Major } from '@prisma/client';
-import { ICreateStudentForm } from '@/lib/validationSchemas';
 import { prisma } from '@/lib/prisma';
+import { ICreateStudentForm } from '@/lib/validationSchemas';
+import { Hobby, Instructor, Level, Major } from '@prisma/client';
 
 // eslint-disable-next-line import/prefer-default-export
 export const upsertStudent = async (studentFormData: ICreateStudentForm) => {
@@ -14,6 +14,7 @@ export const upsertStudent = async (studentFormData: ICreateStudentForm) => {
     hobbies: studentFormData.hobbies as Hobby[],
     name: studentFormData.name,
     major: studentFormData.major as Major,
+    instructor: studentFormData.instructor as Instructor,
   };
   const enrollmentData = {
     email: studentFormData.email,
